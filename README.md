@@ -18,3 +18,4 @@ Installation - Clonez ou téléchargez le repository GitHub dans le dossier voul
 
     Félications le projet est installé correctement.
 
+Il ne vous reste plus qu'à le tester avec APIPlatform.
