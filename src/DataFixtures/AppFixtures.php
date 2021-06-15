@@ -4,7 +4,10 @@ namespace App\DataFixtures;
 
 use App\Entity\Ad;
 use Faker\Factory;
+use App\Entity\Car;
+use App\Entity\Job;
 use App\Entity\User;
+use App\Entity\Estate;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -38,40 +41,50 @@ class AppFixtures extends Fixture
         }
 
         // Gestion of ad
-        for ($i=0; $i < 10; $i++) { 
+        for ($i=0; $i < 12; $i++) { 
             $ad = new Ad;
             $user = $users[mt_rand(0, count($users) - 1)];
 
             $title = $faker->sentence(3);
             $content = $faker->sentence(7);
-            $category = mt_rand(1, 3);
 
             $ad->setTitle($title)
-                 ->setContent($content)
-                 ->setCategory($category)
-                 ->setRelation($user);
+               ->setContent($content)
+               ->setRelation($user);
 
-            // Initialisation à blanc des attribues non employées
-            $ad->setSalary(0)
-                ->setContract('')
-                ->setFuelType('')
-                ->setCarPrice(0)
-                ->setArea(0)
-                ->setAccomPrice(0);
+            $cat = mt_rand(1, 3);
 
             // Initialisation des attribues employées
-            switch ($category) {
+            switch ($cat) {
                 case 1:
-                    $ad->setSalary(mt_rand(10, 30))
-                       ->setContract('CDI');
+                    $job = new Job;
+
+                    $job->setSalary(mt_rand(10, 30))
+                        ->setContract('CDI')
+                        ->setRelation($ad);
+
+                    $manager->persist($job);
+
                     break;
                 case 2:
-                    $ad->setFuelType('gasoil')
-                       ->setCarPrice(mt_rand(1, 4));
+                    $car = new Car;
+                    
+                    $car->setFuel('gasoil')
+                        ->setPrice(mt_rand(1000, 4000))
+                        ->setRelation($ad);
+
+                    $manager->persist($car);
+
                     break;
                 case 3:
-                    $ad->setArea(mt_rand(60, 90))
-                       ->setAccomPrice(mt_rand(1000, 2000));
+                    $estate = new Estate;
+
+                    $estate->setArea(mt_rand(60, 90))
+                           ->setPrice(mt_rand(10000, 20000))
+                           ->setRelation($ad);
+
+                    $manager->persist($estate);
+
                     break;
             }
 
